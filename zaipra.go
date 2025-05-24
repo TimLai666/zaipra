@@ -17,9 +17,9 @@ type Info struct {
 
 // Answer is the main entry point of Zaipra
 // It performs Info Routing and Prompt Diffusion
-func Answer(userQusetion, systemPrompt string, infos []Info, llm llms.Model, options ...llms.CallOption) (string, error) {
+func Answer(userQuestionName, userQuestion, systemPrompt string, infos []Info, llm llms.Model, options ...llms.CallOption) (string, error) {
 	// Step 1: Info Routing
-	usedIndexes, err := classify(userQusetion, infos, llm)
+	usedIndexes, err := classify(userQuestion, infos, llm)
 	if err != nil {
 		return "", err
 	}
@@ -31,7 +31,7 @@ func Answer(userQusetion, systemPrompt string, infos []Info, llm llms.Model, opt
 	}
 
 	// Step 2: Prompt Diffusion (simple combine for now)
-	return generateAnswer(userQusetion, systemPrompt, selectedInfos, llm, options...)
+	return generateAnswer(userQuestionName, userQuestion, systemPrompt, selectedInfos, llm, options...)
 }
 
 // classify simulates selecting relevant info indexes
@@ -66,8 +66,8 @@ func classify(userQusetion string, infos []Info, llm llms.Model) ([]int, error) 
 }
 
 // generateAnswer simulates generating the final answer
-func generateAnswer(userQusetion, systemPrompt string, infos []Info, llm llms.Model, options ...llms.CallOption) (string, error) {
-	prompt := `user:` + userQusetion + "\n\n以下是相關資訊：\n"
+func generateAnswer(userQuestionName, userQuestion, systemPrompt string, infos []Info, llm llms.Model, options ...llms.CallOption) (string, error) {
+	prompt := userQuestionName + `:` + userQuestion + "\n\n以下是相關資訊：\n"
 	for i, info := range infos {
 		prompt += fmt.Sprintf("資訊 %d：%s\n", i+1, info.Title)
 		if info.Description != "" {
