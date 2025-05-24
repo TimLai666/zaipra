@@ -67,11 +67,7 @@ func classify(userQusetion string, infos []Info, llm llms.Model) ([]int, error) 
 
 // generateAnswer simulates generating the final answer
 func generateAnswer(userQusetion, systemPrompt string, infos []Info, llm llms.Model, options ...llms.CallOption) (string, error) {
-	prompt := `user:` + userQusetion + `
-	
-system:` + systemPrompt + `
-
-` + "以下是相關資訊：\n"
+	prompt := `user:` + userQusetion + "\n\n以下是相關資訊：\n"
 	for i, info := range infos {
 		prompt += fmt.Sprintf("資訊 %d：%s\n", i+1, info.Title)
 		if info.Description != "" {
@@ -82,6 +78,8 @@ system:` + systemPrompt + `
 		}
 	}
 	prompt += `
+system:` + systemPrompt + `
+	
 請根據以上資訊以及system指示操作。`
 	llmResponse, err := llms.GenerateFromSinglePrompt(context.Background(), llm, prompt, options...)
 	return llmResponse, err
