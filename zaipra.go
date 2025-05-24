@@ -69,12 +69,12 @@ func classify(userQusetion string, infos []Info, llm llms.Model) ([]int, error) 
 func generateAnswer(userQuestionName, userQuestion, systemPrompt string, infos []Info, llm llms.Model, options ...llms.CallOption) (string, error) {
 	prompt := userQuestionName + `:` + userQuestion + "\n\n以下是相關資訊：\n"
 	for i, info := range infos {
-		prompt += fmt.Sprintf("資訊 %d：%s\n", i+1, info.Title)
+		prompt += fmt.Sprintf("- 資訊 %d：%s\n", i+1, info.Title)
 		if info.Description != "" {
-			prompt += fmt.Sprintf("描述：%s\n", info.Description)
+			prompt += fmt.Sprintf("    描述：%s\n", info.Description)
 		}
 		if info.Content != nil {
-			prompt += fmt.Sprintf("內容：%v\n", info.Content)
+			prompt += fmt.Sprintf("    內容：%v\n", info.Content)
 		}
 	}
 	prompt += `
